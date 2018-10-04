@@ -4,60 +4,209 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ATM {
-   private double deposit;
-   private double withdraw;
+    static ArrayList<Account> accounts = new ArrayList<>();
 
 
-    public ATM(double deposit, double withdraw) {
-        this.deposit = deposit;
-        this.withdraw = withdraw;
+    private static double balance = 0;
+    private static String userName;
+    static Scanner input = new Scanner(System.in);
+
+    public static void main(String[] args) {
+
+        System.out.println("Choose\n A for Existing Account \n B for new Account");
+        String option = input.nextLine();
+        switch (option) {
+            case "A": {
+                System.out.println("Enter Account Number:");
+                String account = input.nextLine();
+               if(operations(account)){
+
+               }
+               break;
+            }
+            case "B": {
+
+                Account newAccount = new Account();
+                System.out.println("Enter Name");
+                String name = input.nextLine();
+                newAccount.setUserName(name);
+                System.out.println("Enter Account Number");
+                String accNo = input.nextLine();
+                newAccount.setAccountNumber(accNo);
+                System.out.println("Enter PIN number");
+                String pin = input.nextLine();
+                newAccount.setPin(pin);
+                System.out.println("Enter initial Balance");
+                double initBalance = input.nextDouble();
+                input.nextLine();
+                newAccount.setBalance(initBalance);
+
+                accounts.add(newAccount);
+
+                if(operations(newAccount.getAccountNumber())){
+
+                }
+                break;
+
+            }
+        }
+
+
     }
 
-    public ATM() {
+    public static boolean operations(String accNo) {
+        boolean aboolean=true;
+        if (validation(accNo)) {
+
+            boolean toContinue = true;
+            do {
+                System.out.println("Chose the operation you want to perform\n");
+                System.out.println("1.Check Balance\n 2. Deposite\n 3. Withdraw\n 4.To Exit");
+                String choice = input.nextLine();
+                switch (choice) {
+                    case "1": {
+                        System.out.println("Your Balance is " + balanceCheck(balance));
+
+                        break;
+                    }
+                    case "2": {
+                        System.out.println("Enter money to be deposited");
+                        double deposite = input.nextDouble();
+                        input.nextLine();
+                        System.out.println("You have succefully added " + deposite + "to your blance");
+                        System.out.println("your current balance is " + deposit(deposite, accNo));
+
+
+                        break;
+                    }
+                    case "3": {
+                        System.out.println("Enter money to be withdrawn");
+                        double withdraw = input.nextDouble();
+                        input.nextLine();
+                        System.out.println(withdraw(withdraw, accNo));
+
+
+                        break;
+                    }
+                    case "4": {
+
+                        System.out.println("Thank you! Have a good Day");
+                        toContinue = false;
+                        break;
+
+                    }
+                    default: {
+                        System.out.println("Invalid Entry");
+                        break;
+                    }
+
+                }
+
+
+            } while (toContinue == true);
+
+        } else System.out.println("YOU ARE LOCKED OUT!");
+
+        return aboolean;
     }
 
-    public double getDeposit() {
-        return deposit;
+
+
+
+public static ArrayList<Account> showAcc(){
+
+        Account acc1 = new Account();
+        acc1.setUserName("Seble");
+        acc1.setAccountNumber("001");
+        acc1.setBalance(100.00);
+        acc1.setPin("0000");
+        accounts.add(acc1);
+        Account acc2 = new Account();
+        acc2.setUserName("Ebor");
+        acc2.setAccountNumber("002");
+        acc2.setBalance(200.00);
+        acc2.setPin("1111");
+        accounts.add(acc2);
+        Account acc3 = new Account();
+        acc3.setUserName("Edna");
+        acc3.setAccountNumber("003");
+        acc3.setBalance(300.00);
+        acc3.setPin("2222");
+        accounts.add(acc3);
+
+        return accounts;
+
+    }
+    public static boolean validation(String accountNumber) {
+          boolean validate=false;
+            for (Account eachAccount : showAcc()) {
+
+                  if (accountNumber.equals(eachAccount.getAccountNumber())) {
+                      System.out.println("Enter PIN");
+                      String pin = input.nextLine();
+                      if (!pin.equals(eachAccount.getPin())) {
+                          int invalid = 0;
+                          boolean check = false;
+                          do {
+                              System.out.println("Enter your PIN again");
+                              pin = input.nextLine();
+                              if (pin.equals(eachAccount.getPin())) {
+                                  check = true;
+                                  balance = eachAccount.getBalance();
+                                  userName=eachAccount.getUserName();
+                                  validate=true;
+
+                              } else
+                                  invalid++;
+
+                          } while ((invalid <= 3) && check == false);
+
+                      } else
+                          balance=eachAccount.getBalance();
+                          validate = true;
+
+
+                  }
+
+
+            }
+
+        return validate;
     }
 
-    public void setDeposit(double deposit) {
-        this.deposit = deposit;
+
+
+    public static double deposit(double deposit, String accNo) {
+
+
+        double newBalance = balance+ deposit;
+        balance=newBalance;
+        return newBalance;
+
     }
 
-    public double getWithdraw() {
-        return withdraw;
+
+    public static double balanceCheck(double balance) {
+        return balance;
+
     }
 
-    public void setWithdraw(double withdraw) {
-        this.withdraw = withdraw;
+
+    public static String withdraw(double withdraw, String accNo) {
+
+        double newBalance ;
+
+        if (withdraw <= (balance)) {
+            newBalance = (balance - withdraw);
+            balance=newBalance;
+            return  "Take your Money.";
+
+        }
+        else
+            return "Insufficient Balance";
+
+
+
+
     }
-
-
-    public static void dataBase(){
-
-         ArrayList<Account> acounts=new ArrayList<Account>(3);
-         Account account1=new Account();
-         account1.setUserName("Seble");
-         account1.setAccountNumber(001);
-         account1.setBalance(100.00);
-         account1.setPin("0000");
-         acounts.add(account1);
-         Account account2=new Account();
-         account2.setUserName("Ebor");
-         account2.setAccountNumber(002);
-         account2.setBalance(200.00);
-         account2.setPin("1111");
-         acounts.add(account2);
-         Account account3=new Account();
-         account3.setUserName("Edna");
-         account3.setAccountNumber(003);
-         account3.setBalance(300.00);
-         account3.setPin("2222");
-         acounts.add(account3);
-
-       Scanner input= new Scanner(System.in);
-       System.out.println("Enter your Account number");
-       int accountNumber=input.nextInt();
-       if accountNumber=account1.getAccountNumber() ||
-   }
 }
